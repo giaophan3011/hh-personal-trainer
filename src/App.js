@@ -1,54 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-
-
-const drawerWidth = 240; 
+import logo from "./logo.svg";
+import "./App.css";
+import React from "react";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import MailIcon from "@material-ui/icons/Mail";
+import CustomerList from "./components/CustomerList";
+import GroupIcon from '@material-ui/icons/Group';
+import PoolIcon from '@material-ui/icons/Pool';
+import TodayIcon from '@material-ui/icons/Today';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
+const drawerWidth = 240;
 const drawerCloseWidth = 0;
 
-const useStyles = makeStyles( theme => ({
+const useStyles = makeStyles((theme) => ({
   appBar: {
-    marginLeft: drawerCloseWidth, 
-    zIndex: 1,   
+    marginLeft: drawerCloseWidth,
+    zIndex: 1,
   },
   appBarShift: {
-    left: drawerWidth, 
+    left: drawerWidth,
   },
   drawerOpen: {
     width: drawerWidth,
   },
   drawerClose: {
     width: drawerCloseWidth,
-    overflowX: 'hidden',
-  }, 
+    overflowX: "hidden",
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-end",
+  },
   toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
     toolbar: theme.mixins.toolbar,
   },
   toolbarHidden: {
     zIndex: -1,
     toolbar: theme.mixins.toolbar,
-
+  },
+  content: {
+    marginLeft: drawerCloseWidth,
+  },
+  contentShift: {
+    marginLeft: drawerWidth,
   },
 }));
 
@@ -68,8 +84,7 @@ function App() {
       <CssBaseline />
       <AppBar
         position="fixed"
-        classes={{root: open ? classes.appBarShift : classes.appBar }}
-    
+        classes={{ root: open ? classes.appBarShift : classes.appBar }}
       >
         <Toolbar>
           <IconButton
@@ -77,7 +92,6 @@ function App() {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-           
           >
             <MenuIcon />
           </IconButton>
@@ -89,57 +103,28 @@ function App() {
       <Drawer
         variant="persistent"
         open={open}
-        className={open ?  classes.drawerOpen :  classes.drawerClose}
+        className={open ? classes.drawerOpen : classes.drawerClose}
       >
-        <div  className={open ?  classes.toolbar :  classes.toolbarHidden}>
+        <div className={open ? classes.toolbar : classes.toolbarHidden}>
           <IconButton onClick={handleDrawerClose}>
             <ChevronRightIcon />
           </IconButton>
-          </div> 
+        </div>
         <Divider />
-        <List style={{ width: drawerWidth}}>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        <List style={{ width: drawerWidth }}>
+          {["Customers", "Trainings", "Calendar", "Statistics"].map((text, index) => (
             <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemIcon>
+                {index === 0 ? <GroupIcon /> : index === 1 ? <PoolIcon/> : index == 2 ? <TodayIcon/> : <EqualizerIcon/>}
+              </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
       </Drawer>
-      <main >
-        <div />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-          donec massa sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-          facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-          tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-          consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-          vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-          hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-          tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-          nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-          accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+      <main className={open ? classes.contentShift : classes.content}>
+        <div className={classes.drawerHeader} />
+        <CustomerList />
       </main>
     </div>
   );
