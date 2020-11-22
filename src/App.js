@@ -1,29 +1,13 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
-import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import { makeStyles } from "@material-ui/core/styles";
+import { AppBar, Toolbar, CssBaseline, Typography, IconButton  } from "@material-ui/core"
+import MenuIcon from '@material-ui/icons/Menu';
 import CustomerList from "./components/CustomerList";
-import GroupIcon from '@material-ui/icons/Group';
-import PoolIcon from '@material-ui/icons/Pool';
-import TodayIcon from '@material-ui/icons/Today';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
+import {BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import TrainingList from "./components/TrainingList";
+import DrawerMenu from "./components/DrawerMenu";
+
 const drawerWidth = 240;
 const drawerCloseWidth = 0;
 
@@ -35,13 +19,6 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     left: drawerWidth,
   },
-  drawerOpen: {
-    width: drawerWidth,
-  },
-  drawerClose: {
-    width: drawerCloseWidth,
-    overflowX: "hidden",
-  },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
@@ -50,16 +27,6 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   },
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    toolbar: theme.mixins.toolbar,
-  },
-  toolbarHidden: {
-    zIndex: -1,
-    toolbar: theme.mixins.toolbar,
-  },
   content: {
     marginLeft: drawerCloseWidth,
   },
@@ -67,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: drawerWidth,
   },
 }));
+
 
 function App() {
   const [open, setOpen] = React.useState(false);
@@ -81,6 +49,7 @@ function App() {
   };
   return (
     <div className="App">
+      <Router>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -96,36 +65,20 @@ function App() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            Personal Trainer
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="persistent"
-        open={open}
-        className={open ? classes.drawerOpen : classes.drawerClose}
-      >
-        <div className={open ? classes.toolbar : classes.toolbarHidden}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronRightIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List style={{ width: drawerWidth }}>
-          {["Customers", "Trainings", "Calendar", "Statistics"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index === 0 ? <GroupIcon /> : index === 1 ? <PoolIcon/> : index == 2 ? <TodayIcon/> : <EqualizerIcon/>}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+      <DrawerMenu open={open} handleDrawerClose= {handleDrawerClose}/>
       <main className={open ? classes.contentShift : classes.content}>
         <div className={classes.drawerHeader} />
-        <CustomerList />
+        <Switch>
+                <Route exact path="/" component={CustomerList}/>
+                <Route path ="/trainings" component={TrainingList}/>
+                <Route render={() => <h1> Coming soon </h1>}/>
+              </Switch>
       </main>
+      </Router>
     </div>
   );
 }
