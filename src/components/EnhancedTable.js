@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import SearchIcon from '@material-ui/icons/Search';
 import {Toolbar, InputBase} from '@material-ui/core';
+import AddCustomerDialog from "./AddCustomerDialog";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -38,6 +39,7 @@ function stableSort(array, comparator) {
 }
 
 const EnhancedTableToolbar = ({handleSearch,tableName}) => {
+ 
   return (
     <Toolbar>
      <Typography
@@ -48,7 +50,8 @@ const EnhancedTableToolbar = ({handleSearch,tableName}) => {
         >
          {tableName}
         </Typography>
-        <div style={{backgroundColor: "white",display: 'flex',}}>
+       
+        <div style={{backgroundColor: "white",display: 'flex',}}>            
             <SearchIcon style={{marginLeft: 2, marginTop: 3, marginRight: 5}}/>            
             <InputBase
               placeholder="Search…"  
@@ -56,7 +59,8 @@ const EnhancedTableToolbar = ({handleSearch,tableName}) => {
                 handleSearch(event.target.value)
               }}  
             />
-          </div>       
+          </div>  
+          <AddCustomerDialog/>    
     </Toolbar>
   );
 };
@@ -101,6 +105,7 @@ const EnhancedTable = ({tableName, headers, rowData, mapFunction, filterFunction
           {stableSort(searchValue === '' ? rowData 
           : rowData.filter((row) => filterFunction(row, searchValue)) 
           , getComparator(order, orderBy)).map((row) => mapFunction(row))} 
+          
         </TableBody>
       </Table>
     </TableContainer>

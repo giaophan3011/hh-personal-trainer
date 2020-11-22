@@ -1,15 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton } from "@material-ui/core";
+import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, TextField } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EnhancedTable from "./EnhancedTable";
 import moment from 'moment';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DoneIcon from '@material-ui/icons/Done';
+import ClearIcon from '@material-ui/icons/Clear';
 
 
 const Row  = (props) => {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
   const [trainings, setTrainings] = useState([]);
+  const [customer, setCustomer]= React.useState(row);
+
+  const editCustomer = () => {
+    if(isInEditMode) {
+    fetch(row.links.find(element => element.rel === "self").href, {
+      method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(customer) // body data type must match "Content-Type" header
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error));
+  }
+  props.setEditRowId(null);
+}
+
+  const handleTextFieldChange = (event) => {
+    console.log(event)
+    setCustomer({...customer, [event.target.id]: event.target.value})
+}
 
   const handleClick = (fetchTrainings) => {
     setOpen(!open);
@@ -22,24 +47,107 @@ const Row  = (props) => {
     }
   }
 
+  const isInEditMode = row.email === props.editRowId;
+
   return (
     <React.Fragment>
-      <TableRow>
-        <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => handleClick(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell component="th" scope="row">
-          {row.firstname}
-        </TableCell>
-        <TableCell>{row.lastname}</TableCell>
-        <TableCell>{row.streetaddress}</TableCell>
-        <TableCell>{row.postcode}</TableCell>
-        <TableCell>{row.city}</TableCell>
-        <TableCell>{row.email}</TableCell>
-        <TableCell>{row.phone}</TableCell>
-      </TableRow>
+      
+        {
+          isInEditMode 
+          ? (
+          <TableRow>
+          <TableCell>
+            <IconButton aria-label="expand row" size="small" onClick={() => handleClick(!open)}>
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell component="th" scope="row">
+          <TextField
+              autoFocus
+              margin="dense"
+              id="firstname"           
+              type="text"
+              fullWidth
+              value={customer.firstname}          
+              onChange={handleTextFieldChange}
+            />
+          </TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="lastname"           
+              type="text"
+              fullWidth
+              value={customer.lastname}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="streetaddress"           
+              type="text"
+              fullWidth
+              value={customer.streetaddress}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="postcode"           
+              type="text"
+              fullWidth
+              value={customer.postcode}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="city"           
+              type="text"
+              fullWidth
+              value={customer.city}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="email"           
+              type="email"
+              fullWidth
+              value={customer.email}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><TextField
+              autoFocus
+              margin="dense"
+              id="phone"           
+              type="text"
+              fullWidth
+              value={customer.phone}          
+              onChange={handleTextFieldChange}
+            /></TableCell>
+          <TableCell><DoneIcon size="small" onClick={editCustomer}/>   <ClearIcon color="secondary"/></TableCell>
+        </TableRow>)
+          : (
+            <TableRow>
+            <TableCell>
+              <IconButton aria-label="expand row" size="small" onClick={() => handleClick(!open)}>
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            </TableCell>
+            <TableCell component="th" scope="row">
+              {row.firstname}
+            </TableCell>
+            <TableCell>{row.lastname}</TableCell>
+            <TableCell>{row.streetaddress}</TableCell>
+            <TableCell>{row.postcode}</TableCell>
+            <TableCell>{row.city}</TableCell>
+            <TableCell>{row.email}</TableCell>
+            <TableCell>{row.phone}</TableCell>
+            <TableCell><EditIcon size="small" onClick={() => props.setEditRowId(row.email)}/>   <DeleteForeverIcon color="secondary"/></TableCell>
+          </TableRow>)
+        }
+        
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
@@ -84,8 +192,9 @@ const tableHeaders = [{id: "firstname", label: "First name"},
   {id: "email", label: "Email"},
   {id: "phone", label: "Phone"}  ];
 
-const TrainingList = () => {
+const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
+  const [editRowId, setEditRowId] = useState(null);
 
   const getCustomers = () => {
     fetch("https://customerrest.herokuapp.com/api/customers")
@@ -100,10 +209,10 @@ const TrainingList = () => {
       tableName="Customers" 
       headers={tableHeaders} 
       rowData={customers} 
-      mapFunction={(row) =>  <Row key={row.email} row={row} />}
+      mapFunction={(row) =>  <Row key={row.email} row={row} setEditRowId={setEditRowId} editRowId={editRowId}/>}
       filterFunction={(row, searchValue) => row.firstname.includes(searchValue) || row.lastname.includes(searchValue) || row.streetaddress.includes(searchValue) || row.email.includes(searchValue) || row.city.includes(searchValue) || row.postcode.includes(searchValue) || row.phone.includes(searchValue)}/>
     </div>
   );
 };
 
-export default TrainingList;
+export default CustomerList;
