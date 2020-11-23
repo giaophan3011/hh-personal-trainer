@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DateFnsUtils from '@date-io/date-fns';
 import {  DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+
 const initialState = {
     training: {   
         date:  undefined,
@@ -29,12 +30,11 @@ export default function AddTrainingDialog({customer}) {
     setNewTraining(initialState.training);
   };
 
-  const handleTextFieldChange = (event) => {
-      
+  const handleTextFieldChange = (event) => {      
       setNewTraining({...newTraining, [event.target.id]: event.target.value})
   }
 
-  const addTraining = async () => {
+  const addTraining = () => {
       newTraining.customer = customer.links.find(element => element.rel === "self").href;
       console.log("date", newTraining.date )
       if (newTraining.date === undefined || newTraining.date === null) newTraining.date =  new Date(Date.now()).toISOString(); 
@@ -52,8 +52,7 @@ export default function AddTrainingDialog({customer}) {
   }
 
   return (
-    <div>
-      
+    <div>      
       <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={handleClickOpen}>Add training</Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add training</DialogTitle>
