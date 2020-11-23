@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, TextField } from "@material-ui/core";
+import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, TextField, Button } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EnhancedTable from "./EnhancedTable";
 import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DeleteButton from "./DeleteButton"
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
+import AddTrainingDialog from "./AddTrainingDialog"
 
 
 const Row  = (props) => {
@@ -15,6 +16,7 @@ const Row  = (props) => {
   const [open, setOpen] = React.useState(false);
   const [trainings, setTrainings] = useState([]);
   const [customer, setCustomer]= React.useState(row);
+ 
 
   const editCustomer = () => {
     if(isInEditMode) {
@@ -30,6 +32,29 @@ const Row  = (props) => {
   }
   props.setEditRowId(null);
 }
+
+const deleteCustomer = () => {
+  fetch(row.links.find(element => element.rel === "self").href, {
+    method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      'Content-Type': 'application/json'
+    } // body data type must match "Content-Type" header
+  })
+  .then(response => response.json())
+  .catch(error => console.log(error));
+}
+
+const deleteTraining = (training) => {
+  fetch(training.links.find(element => element.rel === "self").href, {
+    method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      'Content-Type': 'application/json'
+    } // body data type must match "Content-Type" header
+  })
+  .then(response => response.json())
+  .catch(error => console.log(error));
+}
+
 
   const handleTextFieldChange = (event) => {
     console.log(event)
@@ -126,7 +151,7 @@ const Row  = (props) => {
               value={customer.phone}          
               onChange={handleTextFieldChange}
             /></TableCell>
-          <TableCell><DoneIcon size="small" onClick={editCustomer}/>   <ClearIcon color="secondary"/></TableCell>
+          <TableCell><DoneIcon size="small" onClick={editCustomer}/>   <ClearIcon color="secondary" onClick={() => props.setEditRowId(null)}/></TableCell>
         </TableRow>)
           : (
             <TableRow>
@@ -144,7 +169,7 @@ const Row  = (props) => {
             <TableCell>{row.city}</TableCell>
             <TableCell>{row.email}</TableCell>
             <TableCell>{row.phone}</TableCell>
-            <TableCell><EditIcon size="small" onClick={() => props.setEditRowId(row.email)}/>   <DeleteForeverIcon color="secondary"/></TableCell>
+            <TableCell><EditIcon size="small" onClick={() => props.setEditRowId(row.email)}/>  <DeleteButton handleDelete = {deleteCustomer} title ="Delete customer" deletedObject = {` customer ${row.firstname} ${row.lastname}`} /></TableCell>
           </TableRow>)
         }
         
@@ -155,6 +180,7 @@ const Row  = (props) => {
               <Typography gutterBottom component="div">
                 Training
               </Typography>
+             
               <Table size="small" aria-label="training">
                 <TableHead>
                   <TableRow>
@@ -171,11 +197,15 @@ const Row  = (props) => {
                       </TableCell>
                       <TableCell>{el.date != null ? moment(el.date).format('MMMM Do YYYY, h:mm:ss a'): ""}</TableCell>
                       <TableCell >{el.duration}</TableCell>
-                    
+                      <TableCell><DeleteButton handleDelete = {() => deleteTraining(el)} deletedObject={`activity ${el.activity}`} title ="Delete training" /></TableCell>
                     </TableRow>
                   ))}
+                  <TableRow>
+                  <AddTrainingDialog customer={row}/>
+                  </TableRow>
                 </TableBody>
               </Table>
+              
             </Box>
           </Collapse>
         </TableCell>
