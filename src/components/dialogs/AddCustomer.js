@@ -5,7 +5,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeDialog } from "../../redux/actions/dialogActions";
+
 const initialState = {
     customer: {
         firstname: "",
@@ -19,20 +21,16 @@ const initialState = {
 }
 
 export default function AddCustomerDialog() {
-  const [open, setOpen] = React.useState(false);
   const [newCustomer, setNewCustomer]= React.useState(initialState.customer);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const dispatch = useDispatch();
+  const dialogState = useSelector(state => state.dialogReducer); 
 
   const handleClose = () => {
-    setOpen(false);
+    dispatch(closeDialog());
     setNewCustomer(initialState.customer);
   };
 
   const handleTextFieldChange = (event) => {
-      console.log(event)
       setNewCustomer({...newCustomer, [event.target.id]: event.target.value})
   }
 
@@ -50,10 +48,7 @@ export default function AddCustomerDialog() {
   }
 
   return (
-    <div>
-      <PersonAddIcon style={{ marginLeft: 10}}  onClick={handleClickOpen}/> 
-
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={dialogState.dialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add customer</DialogTitle>
         <DialogContent>
           <TextField
@@ -139,6 +134,6 @@ export default function AddCustomerDialog() {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+
   );
 }

@@ -10,7 +10,9 @@ import Paper from "@material-ui/core/Paper";
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import SearchIcon from '@material-ui/icons/Search';
 import {Toolbar, InputBase} from '@material-ui/core';
-import AddCustomerDialog from "./AddCustomerDialog";
+import { useDispatch } from 'react-redux';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import { displayAddCustomerDialog } from "../redux/actions/dialogActions";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -39,7 +41,7 @@ function stableSort(array, comparator) {
 }
 
 const EnhancedTableToolbar = ({handleSearch,tableName}) => {
- 
+  const dispatch = useDispatch();
   return (
     <Toolbar>
      <Typography
@@ -60,11 +62,10 @@ const EnhancedTableToolbar = ({handleSearch,tableName}) => {
               }}  
             />
           </div>  
-          <AddCustomerDialog/>    
+          <PersonAddIcon style={{ marginLeft: 10}}  onClick={() => dispatch(displayAddCustomerDialog())}/> 
     </Toolbar>
   );
 };
-
 
 
 const EnhancedTable = ({tableName, headers, rowData, mapFunction, filterFunction}) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, TextField, CircularProgress } from "@material-ui/core";
+import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, TextField, CircularProgress, Button } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EnhancedTable from "./EnhancedTable";
@@ -8,10 +8,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteButton from "./DeleteButton"
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
-import AddTrainingDialog from "./AddTrainingDialog"
 import editCustomer, { deleteCustomer } from "../services/api";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {displaySuccessSnackbar, displayErrorSnackbar} from "../redux/actions/snackBarActions"
+import { displayAddTrainingDialog } from "../redux/actions/dialogActions";
 
 const Row = (props) => {
   const dispatch = useDispatch()
@@ -47,10 +47,10 @@ const Row = (props) => {
 
   const deleteTraining = (training) => {
     fetch(training.links.find(element => element.rel === "self").href, {
-      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+      method: 'DELETE', 
       headers: {
         'Content-Type': 'application/json'
-      } // body data type must match "Content-Type" header
+      } 
     })
       .then(response => response.json())
       .catch(error => console.log(error));
@@ -202,7 +202,7 @@ const Row = (props) => {
                     </TableRow>
                   ))}
                   <TableRow>
-                    <AddTrainingDialog customer={row} />
+                  <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={() => dispatch(displayAddTrainingDialog(row))}>Add training</Button>
                   </TableRow>
                 </TableBody>
               </Table>

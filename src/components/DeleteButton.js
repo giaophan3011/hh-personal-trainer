@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+
 const ConfirmDialog = (props) => {
   const { handleDelete, title, deletedObject } = props;
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);

@@ -7,8 +7,8 @@ import CustomerList from "./components/CustomerList";
 import {BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TrainingList from "./components/TrainingList";
 import DrawerMenu from "./components/DrawerMenu";
-import { useDispatch, useSelector } from 'react-redux';
 import SnackbarNotification from "./components/SnackbarNotification";
+import DialogManager from "./components/dialogs/DialogManager";
 
 const drawerWidth = 240;
 const drawerCloseWidth = 0;
@@ -40,11 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const [open, setOpen] = React.useState(false);
-  const dispatch = useDispatch();
   const classes = useStyles();
-  const snackBarOn = useSelector(state => {
-    console.log(state)
-    return state.snackBarReducer})
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -53,11 +49,9 @@ function App() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  console.log("snakcbar", snackBarOn)
   return (
     <div className="App">
-       
+       <DialogManager/>
       <Router>
       <CssBaseline />
       <AppBar

@@ -7,6 +7,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DateFnsUtils from '@date-io/date-fns';
 import {  DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useDispatch, useSelector } from 'react-redux';
+import { closeDialog } from "../../redux/actions/dialogActions";
 
 const initialState = {
     training: {   
@@ -17,16 +19,13 @@ const initialState = {
      } 
 }
 
-export default function AddTrainingDialog({customer}) {
-  const [open, setOpen] = React.useState(false);
+export default function AddTrainingDialog() {
   const [newTraining, setNewTraining]= React.useState(initialState.training);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const dispatch = useDispatch();
+  const dialogState = useSelector(state => state.dialogReducer); 
 
   const handleClose = () => {
-    setOpen(false);
+    dispatch(closeDialog())
     setNewTraining(initialState.training);
   };
 
@@ -35,10 +34,8 @@ export default function AddTrainingDialog({customer}) {
   }
 
   const addTraining = () => {
-      newTraining.customer = customer.links.find(element => element.rel === "self").href;
-      console.log("date", newTraining.date )
+      newTraining.customer = dialogState.dialogData.links.find(element => element.rel === "self").href;
       if (newTraining.date === undefined || newTraining.date === null) newTraining.date =  new Date(Date.now()).toISOString(); 
-      console.log("date", newTraining.date )
     fetch("https://customerrest.herokuapp.com/api/trainings", {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
 
@@ -52,9 +49,7 @@ export default function AddTrainingDialog({customer}) {
   }
 
   return (
-    <div>      
-      <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={handleClickOpen}>Add training</Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+   <Dialog open={dialogState.dialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add training</DialogTitle>
         <DialogContent>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -99,6 +94,6 @@ export default function AddTrainingDialog({customer}) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+   
   );
 }

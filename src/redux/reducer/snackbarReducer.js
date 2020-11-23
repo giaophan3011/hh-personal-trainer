@@ -1,5 +1,3 @@
-import {combineReducers} from 'redux'
-
 const snackBarReducer = (state = {
     snackbarOpen: false,
     message: "",
@@ -29,10 +27,4 @@ const snackBarReducer = (state = {
         return state
     }
   }
-
-
-  const rootReducer = combineReducers({
-    snackBarReducer
-  })
-  
-  export default rootReducer
+  export default snackBarReducer;
