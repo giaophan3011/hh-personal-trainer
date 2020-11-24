@@ -1,20 +1,18 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { closeDialog } from '../../redux/actions/dialogActions';
+import { useSelector } from 'react-redux';
 import AddCustomerDialog from './AddCustomer';
 import AddTrainingDialog from './AddTraining';
+import ConfirmDelete from './ConfirmDelete';
 
 
 const DialogManager = () => {
-    const dispatch = useDispatch();
+
     const dialogState = useSelector(state => state.dialogReducer); 
-    const handleClose =  () => dispatch(closeDialog());
-   
+ 
   return (
     <div>
         {
-            dialogState.dialogType === "DIALOG_ADD_CUSTOMER" ? <AddCustomerDialog/> : <AddTrainingDialog/>
+            dialogState.dialogType === "DIALOG_ADD_CUSTOMER" ? <AddCustomerDialog/> : dialogState.dialogType === "DIALOG_ADD_TRAINING" ? <AddTrainingDialog/> : <ConfirmDelete/>
         }
     </div>
   );

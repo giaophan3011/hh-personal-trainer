@@ -11,8 +11,11 @@ export const displayAddTrainingDialog = (customer) => {
          };
   };
 
-export const displayConfirmDialog = ()=>{
-    return { type: "DIALOG_CONFIRM"
+export const displayConfirmDialog = (dialogTitle, dialogObject, callbackFunction)=>{
+    return { type: "DIALOG_CONFIRM",
+    data: {
+        dialogTitle: dialogTitle, dialogObject: dialogObject, callbackFunction: callbackFunction
+    }
          };
   };
 

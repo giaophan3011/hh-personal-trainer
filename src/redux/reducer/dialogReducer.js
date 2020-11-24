@@ -20,7 +20,8 @@ const dialogReducer = (state = {
         return {
             ...state,
             dialogOpen: true,
-            dialogType: "DIALOG_CONFIRM"
+            dialogType: "DIALOG_CONFIRM",
+            dialogData: action.data
          
         };
     case "DIALOG_CLOSE":

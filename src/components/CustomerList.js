@@ -5,13 +5,13 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EnhancedTable from "./EnhancedTable";
 import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteButton from "./DeleteButton"
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import editCustomer, { deleteCustomer } from "../services/api";
 import { useDispatch } from 'react-redux';
 import {displaySuccessSnackbar, displayErrorSnackbar} from "../redux/actions/snackBarActions"
-import { displayAddTrainingDialog } from "../redux/actions/dialogActions";
+import { displayAddTrainingDialog, displayConfirmDialog } from "../redux/actions/dialogActions";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 const Row = (props) => {
   const dispatch = useDispatch()
@@ -170,7 +170,7 @@ const Row = (props) => {
               <TableCell>{row.city}</TableCell>
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.phone}</TableCell>
-              <TableCell><EditIcon size="small" onClick={() => props.setEditRowId(row.email)} />  <DeleteButton handleDelete={handleDeleteCustomer} title="Delete customer" deletedObject={` customer ${row.firstname} ${row.lastname}`} /></TableCell>
+              <TableCell><EditIcon size="small" onClick={() => props.setEditRowId(row.email)} /><DeleteForeverIcon color="secondary" onClick={() => dispatch(displayConfirmDialog( "Delete customer", row, handleDeleteCustomer))}/></TableCell>
             </TableRow>)
       }
 
@@ -191,16 +191,18 @@ const Row = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {trainings.map((el) => (
+                  {trainings.map((el) => {
+                    console.log(el)
+                    return(
                     <TableRow key={el.date}>
                       <TableCell component="th" scope="row">
                         {el.activity}
                       </TableCell>
                       <TableCell>{el.date != null ? moment(el.date).format('MMMM Do YYYY, h:mm:ss a') : ""}</TableCell>
                       <TableCell >{el.duration}</TableCell>
-                      <TableCell>{(el != null) ? <DeleteButton handleDelete={() => deleteTraining(el)} deletedObject={`activity ${el.activity}`} title="Delete training" /> : ""}</TableCell>
-                    </TableRow>
-                  ))}
+                      <TableCell>{el.activity === null || el.activity === undefined ? "" :<DeleteForeverIcon color="secondary" onClick={() => dispatch(displayConfirmDialog("Delete training", el,  deleteTraining))}/> }</TableCell>
+                    </TableRow>);}
+                  )}
                   <TableRow>
                   <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={() => dispatch(displayAddTrainingDialog(row))}>Add training</Button>
                   </TableRow>
