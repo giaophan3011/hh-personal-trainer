@@ -12,8 +12,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import {Toolbar, InputBase} from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import { displayAddCustomerDialog } from "../redux/actions/dialogActions";
-
+import { displayAddCustomerDialog, displayAddTrainingDialog } from "../redux/actions/dialogActions";
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -61,8 +61,12 @@ const EnhancedTableToolbar = ({handleSearch,tableName}) => {
                 handleSearch(event.target.value)
               }}  
             />
-          </div>  
-          <PersonAddIcon style={{ marginLeft: 10}}  onClick={() => dispatch(displayAddCustomerDialog())}/> 
+          </div>
+          {
+            tableName === "Trainings" ? <LibraryAddIcon  style={{ marginLeft: 10}}  onClick={() => dispatch(displayAddTrainingDialog())}/> 
+            :<PersonAddIcon style={{ marginLeft: 10}}  onClick={() => dispatch(displayAddCustomerDialog())}/> 
+          }  
+          
     </Toolbar>
   );
 };

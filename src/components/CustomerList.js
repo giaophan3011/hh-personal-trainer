@@ -7,42 +7,27 @@ import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
-import editCustomer, { deleteCustomer } from "../services/api";
-import { useDispatch } from 'react-redux';
-import {displaySuccessSnackbar, displayErrorSnackbar} from "../redux/actions/snackBarActions"
+import { useDispatch, useSelector } from 'react-redux';
 import { displayAddTrainingDialog, displayConfirmDialog } from "../redux/actions/dialogActions";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import {getCustomersMiddleware, editCustomerMiddleware, deleteCustomerMiddleware} from "../redux/middleware/customerMiddleware" 
 
 const Row = (props) => {
   const dispatch = useDispatch()
-  const { row, reloadCustomers, setEditRowId } = props;
+  const { row, setEditRowId } = props;
   const [open, setOpen] = React.useState(false);
   const [trainings, setTrainings] = useState([]);
   const [customer, setCustomer] = React.useState(row);
 
   const handleEditCustomer = async () => {
     if (isInEditMode) {
-      try {
-        await editCustomer (customer);
-        dispatch(displaySuccessSnackbar("Customer edited successfully!"));
-        reloadCustomers();
-      } catch (error) {
-        console.log(error);
-        dispatch(displayErrorSnackbar(error));
-      }
+      dispatch(editCustomerMiddleware(customer));
     }
     setEditRowId(null);
   }
 
   const handleDeleteCustomer = async () => {
-    try {
-      await deleteCustomer(row);
-      dispatch(displaySuccessSnackbar("Customer deleted successfully!"));
-      reloadCustomers();      
-    } catch (error) {
-      console.log(error);
-      dispatch(displayErrorSnackbar(error));
-    }
+    dispatch(deleteCustomerMiddleware(row));
   }
 
   const deleteTraining = (training) => {
@@ -226,19 +211,16 @@ const tableHeaders = [{ id: "firstname", label: "First name" },
 { id: "phone", label: "Phone" }];
 
 const CustomerList = () => {
-  const [customers, setCustomers] = useState([]);
   const [editRowId, setEditRowId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const customersState = useSelector(state => state.customerReducer);
+  const dispatch = useDispatch()
 
   const getCustomers = () => {
-    setLoading(true);
-    fetch("https://customerrest.herokuapp.com/api/customers")
-      .then(response => response.json())
-      .then(data => {
-        setCustomers(data.content);
-        setLoading(false);});   
+    dispatch(getCustomersMiddleware())
   }
   useEffect(getCustomers, []);
+ 
 
   return (
     <div style={{justifyContent: 'center'}}>
@@ -248,8 +230,8 @@ const CustomerList = () => {
         : <EnhancedTable
         tableName="Customers"
         headers={tableHeaders}
-        rowData={customers}
-        mapFunction={(row) => <Row key={row.email} row={row} setEditRowId={setEditRowId} editRowId={editRowId} reloadCustomers = {getCustomers}/>}
+        rowData={customersState.customers}
+        mapFunction={(row) => <Row key={row.email} row={row} setEditRowId={setEditRowId} editRowId={editRowId}/>}
         filterFunction={(row, searchValue) => row.firstname.includes(searchValue) || row.lastname.includes(searchValue) || row.streetaddress.includes(searchValue) || row.email.includes(searchValue) || row.city.includes(searchValue) || row.postcode.includes(searchValue) || row.phone.includes(searchValue)} />
       }
      
