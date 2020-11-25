@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { displayAddTrainingDialog, displayConfirmDialog } from "../redux/actions/dialogActions";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import {getCustomersMiddleware, editCustomerMiddleware, deleteCustomerMiddleware} from "../redux/middleware/customerMiddleware" 
+import { getTrainings, deleteTraining } from "../services/trainingApi";
 
 const Row = (props) => {
   const dispatch = useDispatch()
@@ -30,29 +31,33 @@ const Row = (props) => {
     dispatch(deleteCustomerMiddleware(row));
   }
 
-  const deleteTraining = (training) => {
-    fetch(training.links.find(element => element.rel === "self").href, {
-      method: 'DELETE', 
-      headers: {
-        'Content-Type': 'application/json'
-      } 
-    })
-      .then(response => response.json())
-      .catch(error => console.log(error));
+  const handleDeleteTraining = async (training) => {
+    try {
+      await deleteTraining(training);
+      await handleFetchTrainings();
+    } catch (err) {
+      console.log("handleDeleteTraining", err);
+    }
+  }
+
+  const handleFetchTrainings = async () => {
+    const trainingLink = row.links.find(element => element.rel === "trainings").href;
+    try {
+      let data = await getTrainings(trainingLink);
+      setTrainings(data.content);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const handleTextFieldChange = (event) => {
     setCustomer({ ...customer, [event.target.id]: event.target.value })
   }
 
-  const handleClick = (fetchTrainings) => {
+  const handleClick = async (fetchTrainings) => {
     setOpen(!open);
     if (fetchTrainings) {
-      const trainingLink = row.links.find(element => element.rel === "trainings").href;
-      console.log(trainingLink)
-      fetch(trainingLink)
-        .then(response => response.json())
-        .then(data => setTrainings(data.content))
+      await handleFetchTrainings();
     }
   }
 
@@ -185,11 +190,12 @@ const Row = (props) => {
                       </TableCell>
                       <TableCell>{el.date != null ? moment(el.date).format('MMMM Do YYYY, h:mm:ss a') : ""}</TableCell>
                       <TableCell >{el.duration}</TableCell>
-                      <TableCell>{el.activity === null || el.activity === undefined ? "" :<DeleteForeverIcon color="secondary" onClick={() => dispatch(displayConfirmDialog("Delete training", el,  deleteTraining))}/> }</TableCell>
+                      <TableCell>{el.activity === null || el.activity === undefined ? "" :<DeleteForeverIcon color="secondary" onClick={() => dispatch(displayConfirmDialog("Delete training", el,  handleDeleteTraining))}/> }</TableCell>
                     </TableRow>);}
                   )}
                   <TableRow>
-                  <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={() => dispatch(displayAddTrainingDialog(row))}>Add training</Button>
+                  <Button color="primary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={() => dispatch(displayAddTrainingDialog(row))}> Add training </Button>
+                  <Button color="secondary" size="small"  style={{ marginTop: 10, fontSize: 12}} onClick={() => handleFetchTrainings()}> Reload </Button>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -1,6 +1,6 @@
 import { displayErrorSnackbar, displaySuccessSnackbar } from "../actions/snackBarActions";
 
-const { getCustomers, editCustomer, deleteCustomer,addCustomer } = require("../../services/api");
+const { getCustomers, editCustomer, deleteCustomer,addCustomer } = require("../../services/customerApi");
 const { getCustomersAction, updateCustomerAction, deleteCustomerAction, addCustomerAction } = require("../actions/customerActions");
 
 export function getCustomersMiddleware() {

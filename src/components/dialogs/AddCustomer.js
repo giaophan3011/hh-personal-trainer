@@ -54,7 +54,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
           <TextField
-            autoFocus
+         
             margin="dense"
             id="lastname"
             label="Last name"
@@ -64,7 +64,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
           <TextField
-            autoFocus
+          
             margin="dense"
             id="streetaddress"
             label="Street address"
@@ -74,7 +74,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
           <TextField
-            autoFocus
+            
             margin="dense"
             id="postcode"
             label="Post code"
@@ -84,7 +84,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
            <TextField
-            autoFocus
+          
             margin="dense"
             id="city"
             label="City"
@@ -94,7 +94,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
           <TextField
-            autoFocus
+          
             margin="dense"
             id="email"
             label="Email address"
@@ -104,7 +104,7 @@ export default function AddCustomerDialog() {
             onChange={handleTextFieldChange}
           />
           <TextField
-            autoFocus
+            
             margin="dense"
             id="phone"
             label="Phone number"

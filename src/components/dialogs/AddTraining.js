@@ -9,13 +9,20 @@ import DateFnsUtils from '@date-io/date-fns';
 import {  DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useDispatch, useSelector } from 'react-redux';
 import { closeDialog } from "../../redux/actions/dialogActions";
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import {  getCustomersMiddleware } from '../../redux/middleware/customerMiddleware';
+import { addTrainingMiddleware } from '../../redux/middleware/trainingMiddleware';
 
 const initialState = {
     training: {   
         date:  undefined,
         activity: "",
         duration: "",
-        customer : ""
+        customer : "",
+        customerObj: ""
      } 
 }
 
@@ -23,29 +30,29 @@ export default function AddTrainingDialog() {
   const [newTraining, setNewTraining]= React.useState(initialState.training);
   const dispatch = useDispatch();
   const dialogState = useSelector(state => state.dialogReducer); 
-
+  const customerState = useSelector(state => state.customerReducer); 
   const handleClose = () => {
     dispatch(closeDialog())
     setNewTraining(initialState.training);
   };
+  const enableCustomerSelection = (dialogState.dialogData === null || dialogState.dialogData === undefined)
+
+  React.useEffect(() => dispatch(getCustomersMiddleware())
+  ,[])
+
 
   const handleTextFieldChange = (event) => {      
       setNewTraining({...newTraining, [event.target.id]: event.target.value})
   }
 
-  const addTraining = () => {
-      newTraining.customer = dialogState.dialogData.links.find(element => element.rel === "self").href;
+  const addTraining = async () => {
+      if (!enableCustomerSelection) {
+          newTraining.customer = dialogState.dialogData.links.find(element => element.rel === "self").href;
+      } else {
+        newTraining.customer = newTraining.customerObj.links.find(element => element.rel === "self").href;
+      }
       if (newTraining.date === undefined || newTraining.date === null) newTraining.date =  new Date(Date.now()).toISOString(); 
-    fetch("https://customerrest.herokuapp.com/api/trainings", {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newTraining) // body data type must match "Content-Type" header
-      })
-      .then(response => response.json())
-      .catch(error => console.log(error));
+      dispatch(addTrainingMiddleware(newTraining));
   }
 
   return (
@@ -80,6 +87,26 @@ export default function AddTrainingDialog() {
             value={newTraining.duration}
             onChange={handleTextFieldChange}
           />
+          {enableCustomerSelection ?
+          <FormControl style={{minWidth: 240}} id="customer">
+            <InputLabel id="demo-simple-select-filled-label">Customer</InputLabel>
+            <Select
+            labelId="demo-simple-select-filled-label"
+            id="customer"
+            value={newTraining.customerObj}
+            onChange={(event) => 
+                {
+                    console.log("value", event.target.value)
+                    setNewTraining({...newTraining, customerObj: event.target.value});}}
+            >
+            {
+                customerState.customers.map ( i => <MenuItem value={i}>
+                <em>{`${i.firstname} ${i.lastname}`}</em>
+            </MenuItem>)
+            }   
+           
+        </Select>
+  </FormControl> : <div/>}
           
         </DialogContent>
         <DialogActions>

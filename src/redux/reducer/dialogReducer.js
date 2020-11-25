@@ -7,7 +7,8 @@ const dialogReducer = (state = {
       case "DIALOG_ADD_CUSTOMER":
         return {
             ...state,
-            dialogOpen: true
+            dialogOpen: true,
+            dialogType: "DIALOG_ADD_CUSTOMER",
         };
       case "DIALOG_ADD_TRAINING":
         return {
