@@ -1,10 +1,10 @@
-import React from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeDialog } from "../../redux/actions/dialogActions";
 import { addCustomerMiddleware } from '../../redux/middleware/customerMiddleware';
@@ -53,8 +53,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.firstname}
             onChange={handleTextFieldChange}
           />
-          <TextField
-         
+          <TextField         
             margin="dense"
             id="lastname"
             label="Last name"
@@ -63,8 +62,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.lastname}
             onChange={handleTextFieldChange}
           />
-          <TextField
-          
+          <TextField          
             margin="dense"
             id="streetaddress"
             label="Street address"
@@ -73,8 +71,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.stressaddress}
             onChange={handleTextFieldChange}
           />
-          <TextField
-            
+          <TextField            
             margin="dense"
             id="postcode"
             label="Post code"
@@ -83,8 +80,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.postcode}
             onChange={handleTextFieldChange}
           />
-           <TextField
-          
+           <TextField          
             margin="dense"
             id="city"
             label="City"
@@ -93,8 +89,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.city}
             onChange={handleTextFieldChange}
           />
-          <TextField
-          
+          <TextField          
             margin="dense"
             id="email"
             label="Email address"
@@ -103,8 +98,7 @@ export default function AddCustomerDialog() {
             value={newCustomer.email}
             onChange={handleTextFieldChange}
           />
-          <TextField
-            
+          <TextField            
             margin="dense"
             id="phone"
             label="Phone number"
