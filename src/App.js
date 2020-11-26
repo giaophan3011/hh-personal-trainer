@@ -10,6 +10,7 @@ import DrawerMenu from "./components/DrawerMenu";
 import SnackbarNotification from "./components/SnackbarNotification";
 import DialogManager from "./components/dialogs/DialogManager";
 import TrainingCalendar from "./components/TrainingCalendar";
+import Statistics from "./components/Statistics";
 
 const drawerWidth = 240;
 const drawerCloseWidth = 0;
@@ -76,6 +77,7 @@ function App() {
             <Route exact path="/" component={CustomerList} />
             <Route path="/trainings" component={TrainingList} />
             <Route path="/calendar" component={TrainingCalendar} />
+            <Route path="/statistics" component={Statistics} />
             <Route render={() => <h1> Coming soon </h1>} />
           </Switch>
         </main>
